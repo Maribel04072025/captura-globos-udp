@@ -7,27 +7,55 @@ package ui;
 import javax.swing.*;
 import java.awt.*;
 
-import game.GameManager;
-import model.Jugador;
-
 public class VentanaJuego extends JFrame {
 
-    private PanelJuego panelJuego;
+    private CardLayout cardLayout;
+    private JPanel contenedor;
 
     public VentanaJuego() {
-        setTitle("Captura los Globos 🎈");
-        setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle("🎈 Captura los Globos");
+        setSize(900, 700);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        panelJuego = new PanelJuego();
-        add(panelJuego, BorderLayout.CENTER);
+        cardLayout = new CardLayout();
+        contenedor = new JPanel(cardLayout);
 
+        // Panel de inicio
+        JPanel panelInicio = new JPanel(new BorderLayout());
+        JLabel titulo = new JLabel("🎈 CAPTURA LOS GLOBOS", SwingConstants.CENTER);
+        titulo.setFont(new Font("Arial", Font.BOLD, 40));
+
+        JButton btnIniciar = new JButton("Iniciar Juego");
+        btnIniciar.setFont(new Font("Arial", Font.BOLD, 25));
+        btnIniciar.addActionListener(e -> mostrarJuego());
+
+        panelInicio.add(titulo, BorderLayout.CENTER);
+        panelInicio.add(btnIniciar, BorderLayout.SOUTH);
+
+        // Panel de juego (info + juego)
+        JPanel panelJuegoCompleto = new JPanel(new BorderLayout());
+        panelJuegoCompleto.add(new PanelInfo(), BorderLayout.NORTH);
+        panelJuegoCompleto.add(new PanelJuego(this), BorderLayout.CENTER);
+
+        contenedor.add(panelInicio, "inicio");
+        contenedor.add(panelJuegoCompleto, "juego");
+        contenedor.add(new PantallaFinal(this), "final");
+
+        add(contenedor);
+        mostrarInicio();
         setVisible(true);
     }
 
-    public void iniciarJuego(Jugador j1, Jugador j2) {
-        GameManager.getInstance().iniciarJuego(j1, j2);
+    public void mostrarInicio() {
+        cardLayout.show(contenedor, "inicio");
+    }
+
+    public void mostrarJuego() {
+        cardLayout.show(contenedor, "juego");
+    }
+
+    public void mostrarFinal() {
+        cardLayout.show(contenedor, "final");
     }
 }

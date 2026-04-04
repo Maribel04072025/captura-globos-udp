@@ -14,10 +14,11 @@ import java.awt.event.MouseEvent;
 
 public class PanelJuego extends JPanel {
 
-    private GameManager manager;
+    private GameManager manager = GameManager.getInstance();
+    private VentanaJuego ventana;
 
-    public PanelJuego() {
-        manager = GameManager.getInstance();
+    public PanelJuego(VentanaJuego ventana) {
+        this.ventana = ventana;
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -27,35 +28,39 @@ public class PanelJuego extends JPanel {
             }
         });
 
-        // Repintado constante
-        Timer timer = new Timer(30, e -> repaint());
-        timer.start();
+        new Timer(40, e -> {
+            repaint();
+
+            if (manager.getEstado().getTiempoRestante() <= 0) {
+                ventana.mostrarFinal();
+            }
+        }).start();
     }
 
-@Override
-protected void paintComponent(Graphics g) {
-    super.paintComponent(g);
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
-    Graphics2D g2 = (Graphics2D) g;
+        Graphics2D g2 = (Graphics2D) g;
 
-    // 🎨 Fondo cielo degradado elegante
-    GradientPaint cielo = new GradientPaint(
-            0, 0, new Color(224, 247, 255),
-            0, getHeight(), new Color(200, 230, 255)
-    );
-
-    g2.setPaint(cielo);
-    g2.fillRect(0, 0, getWidth(), getHeight());
-
-    // 🎈 Dibujar globos
-    for (Globo globo : manager.getEstado().getGlobos()) {
-        g2.setColor(globo.getColor());
-        g2.fillOval(
-                globo.getX() - globo.getRadio(),
-                globo.getY() - globo.getRadio(),
-                globo.getRadio() * 2,
-                globo.getRadio() * 2
+        // Fondo cielo degradado
+        GradientPaint cielo = new GradientPaint(
+                0, 0, new Color(230, 245, 255),
+                0, getHeight(), new Color(210, 235, 255)
         );
+
+        g2.setPaint(cielo);
+        g2.fillRect(0, 0, getWidth(), getHeight());
+
+        // Dibujar globos
+        for (Globo globo : manager.getEstado().getGlobos()) {
+            g2.setColor(globo.getColor());
+            g2.fillOval(
+                    globo.getX() - globo.getRadio(),
+                    globo.getY() - globo.getRadio(),
+                    globo.getRadio() * 2,
+                    globo.getRadio() * 2
+            );
+        }
     }
-}
 }
