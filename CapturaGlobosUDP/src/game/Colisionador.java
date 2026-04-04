@@ -4,10 +4,31 @@
  */
 package game;
 
-/**
- *
- * @author marib
- */
+import model.EstadoJuego;
+import model.Globo;
+
+import java.util.Iterator;
+
 public class Colisionador {
-    
+
+    private EstadoJuego estado;
+
+    public Colisionador(EstadoJuego estado) {
+        this.estado = estado;
+    }
+
+    public void procesarClick(int x, int y) {
+
+        Iterator<Globo> it = estado.getGlobos().iterator();
+
+        while (it.hasNext()) {
+            Globo g = it.next();
+
+            if (g.contiene(x, y)) {
+                it.remove();
+                estado.getJugadorLocal().sumarPunto();
+                break;
+            }
+        }
+    }
 }

@@ -4,14 +4,9 @@
  */
 package game;
 
-/**
- *
- * @author marib
- */
 import model.*;
-import util.RandomUtil;
+import util.Constantes;
 
-import java.awt.Color;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,8 +18,13 @@ public class GameManager {
     private Timer timerGlobos;
     private Timer timerTiempo;
 
+    private GeneradorGlobos generador;
+    private Colisionador colisionador;
+
     private GameManager() {
         estado = new EstadoJuego();
+        generador = new GeneradorGlobos(estado);
+        colisionador = new Colisionador(estado);
     }
 
     public static GameManager getInstance() {
@@ -37,6 +37,7 @@ public class GameManager {
     public void iniciarJuego(Jugador local, Jugador remoto) {
         estado.setJugadorLocal(local);
         estado.setJugadorRemoto(remoto);
+        estado.setTiempoRestante(Constantes.TIEMPO_INICIAL);
 
         iniciarGeneracionGlobos();
         iniciarTiempo();
@@ -47,9 +48,9 @@ public class GameManager {
         timerGlobos.schedule(new TimerTask() {
             @Override
             public void run() {
-                crearGlobo();
+                generador.generar();
             }
-        }, 0, 2000);
+        }, 0, Constantes.INTERVALO_GLOBOS);
     }
 
     private void iniciarTiempo() {
@@ -62,33 +63,19 @@ public class GameManager {
 
                 if (t <= 0) {
                     finalizarJuego();
-                    timerTiempo.cancel();
-                    timerGlobos.cancel();
                 }
             }
         }, 1000, 1000);
     }
 
-    private void crearGlobo() {
-        int x = RandomUtil.randomX();
-        int y = RandomUtil.randomY();
-
-        Globo g = new Globo(x, y, 30, Color.RED);
-        estado.getGlobos().add(g);
+    private void finalizarJuego() {
+        timerGlobos.cancel();
+        timerTiempo.cancel();
+        System.out.println("Juego terminado");
     }
 
     public void procesarClick(int x, int y) {
-        for (Globo g : estado.getGlobos()) {
-            if (g.contiene(x, y)) {
-                estado.getGlobos().remove(g);
-                estado.getJugadorLocal().sumarPunto();
-                break;
-            }
-        }
-    }
-
-    private void finalizarJuego() {
-        System.out.println("Juego terminado");
+        colisionador.procesarClick(x, y);
     }
 
     public EstadoJuego getEstado() {

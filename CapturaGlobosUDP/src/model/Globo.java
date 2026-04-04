@@ -4,17 +4,11 @@
  */
 package model;
 
-/**
- *
- * @author marib
- */
 import java.awt.Color;
 
 public class Globo {
 
-    private int x;
-    private int y;
-    private int radio;
+    private int x, y, radio;
     private Color color;
 
     public Globo(int x, int y, int radio, Color color) {
@@ -24,9 +18,9 @@ public class Globo {
         this.color = color;
     }
 
-    public boolean contiene(int mx, int my) {
-        int dx = mx - x;
-        int dy = my - y;
+    public boolean contiene(int px, int py) {
+        int dx = px - x;
+        int dy = py - y;
         return dx * dx + dy * dy <= radio * radio;
     }
 
