@@ -4,28 +4,41 @@
  */
 package model;
 
-import java.awt.Color;
+import javax.swing.*;
+import java.awt.*;
 
 public class Globo {
 
     private int x, y, radio;
-    private Color color;
+    private Image imagen;
 
-    public Globo(int x, int y, int radio, Color color) {
+    public Globo(int x, int y, int radio) {
         this.x = x;
         this.y = y;
         this.radio = radio;
-        this.color = color;
+
+        // Cargar imagen UNA sola vez por globo
+        imagen = new ImageIcon(
+                getClass().getResource("/recursos/globo.png")
+        ).getImage();
     }
 
-    public boolean contiene(int px, int py) {
-        int dx = px - x;
-        int dy = py - y;
+    public void dibujar(Graphics g) {
+        g.drawImage(imagen,
+                x - radio,
+                y - radio,
+                radio * 2,
+                radio * 2,
+                null);
+    }
+
+    public boolean contiene(int mx, int my) {
+        int dx = mx - x;
+        int dy = my - y;
         return dx * dx + dy * dy <= radio * radio;
     }
 
     public int getX() { return x; }
     public int getY() { return y; }
     public int getRadio() { return radio; }
-    public Color getColor() { return color; }
 }

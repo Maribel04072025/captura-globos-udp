@@ -4,27 +4,23 @@
  */
 package game;
 
-import model.*;
-import util.Constantes;
+import model.EstadoJuego;
+import model.Globo;
+import model.Jugador;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import javax.swing.*;
+import java.util.Iterator;
 
 public class GameManager {
 
     private static GameManager instance;
 
     private EstadoJuego estado;
-    private Timer timerGlobos;
-    private Timer timerTiempo;
-
     private GeneradorGlobos generador;
-    private Colisionador colisionador;
+    private JPanel zonaJuego;
 
     private GameManager() {
         estado = new EstadoJuego();
-        generador = new GeneradorGlobos(estado);
-        colisionador = new Colisionador(estado);
     }
 
     public static GameManager getInstance() {
@@ -34,49 +30,45 @@ public class GameManager {
         return instance;
     }
 
+    // ------------------ INICIO DEL JUEGO ------------------
+
     public void iniciarJuego(Jugador local, Jugador remoto) {
         estado.setJugadorLocal(local);
         estado.setJugadorRemoto(remoto);
-        estado.setTiempoRestante(Constantes.TIEMPO_INICIAL);
 
-        iniciarGeneracionGlobos();
-        iniciarTiempo();
+        generador = new GeneradorGlobos();
+        generador.iniciar();
     }
 
-    private void iniciarGeneracionGlobos() {
-        timerGlobos = new Timer();
-        timerGlobos.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                generador.generar();
-            }
-        }, 0, Constantes.INTERVALO_GLOBOS);
+    // ------------------ ZONA DE DIBUJO ------------------
+
+    public void setZonaJuego(JPanel panel) {
+        this.zonaJuego = panel;
     }
 
-    private void iniciarTiempo() {
-        timerTiempo = new Timer();
-        timerTiempo.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                int t = estado.getTiempoRestante();
-                estado.setTiempoRestante(t - 1);
-
-                if (t <= 0) {
-                    finalizarJuego();
-                }
-            }
-        }, 1000, 1000);
+    public JPanel getZonaJuego() {
+        return zonaJuego;
     }
 
-    private void finalizarJuego() {
-        timerGlobos.cancel();
-        timerTiempo.cancel();
-        System.out.println("Juego terminado");
-    }
+    // ------------------ CLIC EN GLOBO ------------------
 
     public void procesarClick(int x, int y) {
-        colisionador.procesarClick(x, y);
+
+        Iterator<Globo> it = estado.getGlobos().iterator();
+
+        while (it.hasNext()) {
+            Globo g = it.next();
+
+            if (g.contiene(x, y)) {
+                it.remove();
+                estado.getJugadorLocal().sumarPunto();
+                System.out.println("Globo reventado!");
+                break;
+            }
+        }
     }
+
+    // ------------------ GET ESTADO ------------------
 
     public EstadoJuego getEstado() {
         return estado;

@@ -5,62 +5,45 @@
 package game;
 
 import model.Globo;
-import model.EstadoJuego;
-import util.Constantes;
 
-import java.awt.Color;
+import javax.swing.*;
+import java.util.Random;
 
 public class GeneradorGlobos {
 
-    private EstadoJuego estado;
+    private Timer timer;
+    private Random random = new Random();
 
-    public GeneradorGlobos(EstadoJuego estado) {
-        this.estado = estado;
+    public void iniciar() {
+
+        timer = new Timer(1500, e -> generar());
+        timer.start();
     }
 
-    public void generar() {
-        for (int i = 0; i < Constantes.GLOBOS_POR_CICLO; i++) {
-            crearGlobo();
-        }
+    private void generar() {
+
+        var estado = GameManager.getInstance().getEstado();
+
+        if (GameManager.getInstance().getZonaJuego() == null) return;
+
+        int radio = 40;
+
+        int ancho = GameManager.getInstance().getZonaJuego().getWidth();
+        int alto = GameManager.getInstance().getZonaJuego().getHeight();
+
+        if (ancho == 0 || alto == 0) return;
+
+        int x = random.nextInt(ancho - radio * 2) + radio;
+        int y = random.nextInt(alto - radio * 2) + radio;
+
+        Globo g = new Globo(x, y, radio);
+        estado.getGlobos().add(g);
+
+        System.out.println("Globo generado en: " + x + "," + y);
     }
 
-    private void crearGlobo() {
-
-        int radio = Constantes.RADIO_GLOBO;
-        int intentos = 0;
-        boolean posicionValida = false;
-
-        int x = 0, y = 0;
-
-        while (!posicionValida && intentos < 50) {
-
-            x = (int) (Math.random() * (Constantes.ANCHO_VENTANA - 2 * Constantes.MARGEN)) + Constantes.MARGEN;
-            y = (int) (Math.random() * (Constantes.ALTO_VENTANA - 2 * Constantes.MARGEN)) + Constantes.MARGEN;
-
-            posicionValida = true;
-
-            for (Globo g : estado.getGlobos()) {
-                int dx = g.getX() - x;
-                int dy = g.getY() - y;
-                double distancia = Math.sqrt(dx * dx + dy * dy);
-
-                if (distancia < radio * 2) {
-                    posicionValida = false;
-                    break;
-                }
-            }
-
-            intentos++;
-        }
-
-        if (posicionValida) {
-            Color color = new Color(
-                    (int)(Math.random()*255),
-                    (int)(Math.random()*255),
-                    (int)(Math.random()*255)
-            );
-
-            estado.getGlobos().add(new Globo(x, y, radio, color));
-        }
+    public void detener() {
+        if (timer != null) timer.stop();
     }
 }
+
