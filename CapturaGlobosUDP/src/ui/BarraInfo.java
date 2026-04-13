@@ -3,14 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package ui;
+
 import javax.swing.*;
 import java.awt.*;
 import game.GameManager;
-/**
- *
- * @author marib
- */
-
 
 public class BarraInfo extends JPanel {
 
@@ -22,36 +18,34 @@ public class BarraInfo extends JPanel {
 
         setLayout(new GridLayout(1, 3));
         setPreferredSize(new Dimension(900, 60));
-        setBackground(new Color(220, 235, 250)); // azul claro elegante
+        setBackground(new Color(220, 235, 250));
 
-        lblJugador = crearLabel();
-        lblPuntos = crearLabel();
-        lblTiempo = crearLabel();
+        lblJugador = crearLabel("Jugador: ");
+        lblPuntos = crearLabel("Puntos: 0");
+        lblTiempo = crearLabel("Tiempo: 60");
 
         add(lblJugador);
         add(lblPuntos);
         add(lblTiempo);
-
-        // Timer para actualizar la info cada 100 ms
-        new javax.swing.Timer(100, e -> actualizar()).start();
     }
 
-    private JLabel crearLabel() {
-        JLabel l = new JLabel("", SwingConstants.CENTER);
+    private JLabel crearLabel(String textoInicial) {
+        JLabel l = new JLabel(textoInicial, SwingConstants.CENTER);
         l.setFont(new Font("Arial", Font.BOLD, 20));
         l.setForeground(Color.BLACK);
         return l;
     }
 
+    // Este método SOLO lo llama VentanaJuego
     public void actualizar() {
+
         var estado = GameManager.getInstance().getEstado();
 
         if (estado.getJugadorLocal() != null) {
             lblJugador.setText("Jugador: " + estado.getJugadorLocal().getNombre());
             lblPuntos.setText("Puntos: " + estado.getJugadorLocal().getPuntos());
-            lblTiempo.setText("Tiempo: " + estado.getTiempoRestante());
         }
-    }
 
-    
+        lblTiempo.setText("Tiempo: " + estado.getTiempoRestante());
+    }
 }

@@ -4,12 +4,10 @@
  */
 package game;
 
-import model.EstadoJuego;
-import model.Globo;
-import model.Jugador;
+import model.*;
+import sound.SoundManager;
 
 import javax.swing.*;
-import java.util.Iterator;
 
 public class GameManager {
 
@@ -18,9 +16,11 @@ public class GameManager {
     private EstadoJuego estado;
     private GeneradorGlobos generador;
     private JPanel zonaJuego;
+    private Colisionador colisionador;
 
     private GameManager() {
         estado = new EstadoJuego();
+        colisionador = new Colisionador(estado);
     }
 
     public static GameManager getInstance() {
@@ -30,17 +30,17 @@ public class GameManager {
         return instance;
     }
 
-    // ------------------ INICIO DEL JUEGO ------------------
-
     public void iniciarJuego(Jugador local, Jugador remoto) {
+
         estado.setJugadorLocal(local);
         estado.setJugadorRemoto(remoto);
 
-        generador = new GeneradorGlobos();
+        generador = new GeneradorGlobos(this);
         generador.iniciar();
-    }
 
-    // ------------------ ZONA DE DIBUJO ------------------
+        // 🎵 MÚSICA DE FONDO
+        SoundManager.getInstance().musicaFondo();
+    }
 
     public void setZonaJuego(JPanel panel) {
         this.zonaJuego = panel;
@@ -50,27 +50,19 @@ public class GameManager {
         return zonaJuego;
     }
 
-    // ------------------ CLIC EN GLOBO ------------------
-
-    public void procesarClick(int x, int y) {
-
-        Iterator<Globo> it = estado.getGlobos().iterator();
-
-        while (it.hasNext()) {
-            Globo g = it.next();
-
-            if (g.contiene(x, y)) {
-                it.remove();
-                estado.getJugadorLocal().sumarPunto();
-                System.out.println("Globo reventado!");
-                break;
-            }
-        }
-    }
-
-    // ------------------ GET ESTADO ------------------
-
     public EstadoJuego getEstado() {
         return estado;
+    }
+
+    public Colisionador getColisionador() {
+        return colisionador;
+    }
+
+    public void agregarGlobo(model.Globo g) {
+        estado.agregarGlobo(g);
+    }
+
+    public void procesarClick(int x, int y) {
+        estado.reventarGloboEn(x, y);
     }
 }

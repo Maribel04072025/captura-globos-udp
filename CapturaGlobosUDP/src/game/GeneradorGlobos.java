@@ -13,37 +13,39 @@ public class GeneradorGlobos {
 
     private Timer timer;
     private Random random = new Random();
+    private GameManager manager;
+
+    public GeneradorGlobos(GameManager manager) {
+        this.manager = manager;
+    }
 
     public void iniciar() {
-
-        timer = new Timer(1500, e -> generar());
+        timer = new Timer(600, e -> generar());
         timer.start();
     }
 
     private void generar() {
 
-        var estado = GameManager.getInstance().getEstado();
+        JPanel zona = manager.getZonaJuego();
 
-        if (GameManager.getInstance().getZonaJuego() == null) return;
+        if (zona == null || zona.getWidth() <= 0 || zona.getHeight() <= 0) return;
 
-        int radio = 40;
+        int radio = 80;
+        int intentos = 0;
 
-        int ancho = GameManager.getInstance().getZonaJuego().getWidth();
-        int alto = GameManager.getInstance().getZonaJuego().getHeight();
+        while (intentos < 20) {
 
-        if (ancho == 0 || alto == 0) return;
+            int x = random.nextInt(zona.getWidth() - radio * 2) + radio;
+            int y = random.nextInt(zona.getHeight() - radio * 2) + radio;
 
-        int x = random.nextInt(ancho - radio * 2) + radio;
-        int y = random.nextInt(alto - radio * 2) + radio;
+            Globo nuevo = new Globo(x, y, radio);
 
-        Globo g = new Globo(x, y, radio);
-        estado.getGlobos().add(g);
+            if (!manager.getColisionador().hayColision(nuevo)) {
+                manager.agregarGlobo(nuevo);
+                break;
+            }
 
-        System.out.println("Globo generado en: " + x + "," + y);
-    }
-
-    public void detener() {
-        if (timer != null) timer.stop();
+            intentos++;
+        }
     }
 }
-

@@ -4,10 +4,32 @@
  */
 package sound;
 
-/**
- *
- * @author marib
- */
+import util.Sonido;
+
 public class SoundManager {
-    
+
+    private static SoundManager instance;
+
+    private Sonido musica;
+    private Sonido pop;
+
+    private SoundManager() {
+        musica = new Sonido("/recursos/SonidoJuego.wav");
+        pop = new Sonido("/recursos/Globo.wav");
+    }
+
+    public static SoundManager getInstance() {
+        if (instance == null) {
+            instance = new SoundManager();
+        }
+        return instance;
+    }
+
+    public void musicaFondo() {
+        musica.loop();
+    }
+
+    public void sonidoPop() {
+        pop.reproducir();
+    }
 }

@@ -7,7 +7,7 @@ package game;
 import model.EstadoJuego;
 import model.Globo;
 
-import java.util.Iterator;
+import java.util.List;
 
 public class Colisionador {
 
@@ -18,17 +18,19 @@ public class Colisionador {
     }
 
     public void procesarClick(int x, int y) {
+        estado.reventarGloboEn(x, y);
+    }
 
-        Iterator<Globo> it = estado.getGlobos().iterator();
+    public boolean hayColision(Globo nuevo) {
 
-        while (it.hasNext()) {
-            Globo g = it.next();
+        List<Globo> globos = estado.getGlobos();
 
-            if (g.contiene(x, y)) {
-                it.remove();
-                estado.getJugadorLocal().sumarPunto();
-                break;
+        for (Globo g : globos) {
+            if (g.colisionaCon(nuevo)) {
+                return true;
             }
         }
+
+        return false;
     }
 }

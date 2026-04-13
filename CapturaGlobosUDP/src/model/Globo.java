@@ -10,6 +10,7 @@ import java.awt.*;
 public class Globo {
 
     private int x, y, radio;
+    private int dx, dy;
     private Image imagen;
 
     public Globo(int x, int y, int radio) {
@@ -17,25 +18,40 @@ public class Globo {
         this.y = y;
         this.radio = radio;
 
-        // Cargar imagen UNA sola vez por globo
+        dx = (int)(Math.random() * 5) + 2;
+        dy = (int)(Math.random() * 5) + 2;
+
+        if (Math.random() < 0.5) dx *= -1;
+        if (Math.random() < 0.5) dy *= -1;
+
         imagen = new ImageIcon(
                 getClass().getResource("/recursos/globo.png")
         ).getImage();
     }
 
+    public void mover(int ancho, int alto) {
+        x += dx;
+        y += dy;
+
+        if (x - radio < 0 || x + radio > ancho) dx *= -1;
+        if (y - radio < 0 || y + radio > alto) dy *= -1;
+    }
+
     public void dibujar(Graphics g) {
-        g.drawImage(imagen,
-                x - radio,
-                y - radio,
-                radio * 2,
-                radio * 2,
-                null);
+        g.drawImage(imagen, x - radio, y - radio, radio * 2, radio * 2, null);
     }
 
     public boolean contiene(int mx, int my) {
         int dx = mx - x;
         int dy = my - y;
         return dx * dx + dy * dy <= radio * radio;
+    }
+
+    public boolean colisionaCon(Globo otro) {
+        int dx = this.x - otro.x;
+        int dy = this.y - otro.y;
+        int r = this.radio + otro.radio;
+        return dx * dx + dy * dy <= r * r;
     }
 
     public int getX() { return x; }
