@@ -9,37 +9,41 @@ import java.net.URL;
 
 public class Sonido {
 
-    private String ruta;
+    private Clip clip;
 
     public Sonido(String ruta) {
-        this.ruta = ruta;
-    }
-
-    public void reproducir() {
         try {
             URL url = getClass().getResource(ruta);
-
             AudioInputStream audio = AudioSystem.getAudioInputStream(url);
-            Clip clip = AudioSystem.getClip();
+            clip = AudioSystem.getClip();
             clip.open(audio);
-            clip.start();
-
         } catch (Exception e) {
-            System.out.println("No se pudo reproducir: " + ruta);
+            System.out.println("No se pudo cargar el sonido: " + ruta);
         }
     }
 
+    public void reproducir() {
+        if (clip == null) return;
+
+        if (clip.isRunning()) {
+            clip.stop();
+        }
+        clip.setFramePosition(0);
+        clip.start();
+    }
+
     public void loop() {
-        try {
-            URL url = getClass().getResource(ruta);
+        if (clip == null) return;
 
-            AudioInputStream audio = AudioSystem.getAudioInputStream(url);
-            Clip clip = AudioSystem.getClip();
-            clip.open(audio);
+        if (!clip.isRunning()) {
+            clip.setFramePosition(0);
             clip.loop(Clip.LOOP_CONTINUOUSLY);
+        }
+    }
 
-        } catch (Exception e) {
-            System.out.println("No se pudo reproducir: " + ruta);
+    public void detener() {
+        if (clip != null) {
+            clip.stop();
         }
     }
 }

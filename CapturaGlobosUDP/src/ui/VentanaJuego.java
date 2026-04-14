@@ -17,7 +17,7 @@ public class VentanaJuego extends JFrame {
     private BarraInfo barraInfo;
     private Image fondo;
 
-    public VentanaJuego() {
+    public VentanaJuego(String nombreJugador) {
 
         GameManager manager = GameManager.getInstance();
 
@@ -27,17 +27,17 @@ public class VentanaJuego extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        fondo = new ImageIcon(getClass().getResource("/recursos/fondo.jpg")).getImage();
+        fondo = new ImageIcon(
+                getClass().getResource("/recursos/fondo.jpg")
+        ).getImage();
 
         barraInfo = new BarraInfo();
         add(barraInfo, BorderLayout.NORTH);
 
         zonaJuego = new JPanel() {
-
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-
                 g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
 
                 for (Globo globo : manager.getEstado().getGlobos()) {
@@ -58,13 +58,11 @@ public class VentanaJuego extends JFrame {
         });
 
         manager.iniciarJuego(
-                new Jugador("Mari"),
+                new Jugador(nombreJugador),
                 new Jugador("CPU")
         );
 
-        // 🔥 GAME LOOP CORREGIDO
         new Timer(30, e -> {
-
             int ancho = zonaJuego.getWidth();
             int alto = zonaJuego.getHeight();
 
@@ -74,7 +72,6 @@ public class VentanaJuego extends JFrame {
 
         }).start();
 
-        // ⏱ TIMER DE TIEMPO (SEPARADO)
         new Timer(1000, e -> {
             manager.getEstado().bajarTiempo();
             barraInfo.actualizar();

@@ -4,10 +4,15 @@
  */
 package main;
 
-import ui.VentanaJuego;
+import ui.PantallaInicio;
 
 public class Main {
+
     public static void main(String[] args) {
-        new VentanaJuego();
+
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            new PantallaInicio();
+        });
+
     }
 }
