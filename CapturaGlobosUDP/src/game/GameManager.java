@@ -19,8 +19,7 @@ public class GameManager {
     private Colisionador colisionador;
 
     private GameManager() {
-        estado = new EstadoJuego();
-        colisionador = new Colisionador(estado);
+        reiniciarEstado();
     }
 
     public static GameManager getInstance() {
@@ -30,7 +29,21 @@ public class GameManager {
         return instance;
     }
 
+    // 🔥 ESTE MÉTODO ES LA CLAVE DE TODO
+    public void reiniciarEstado() {
+        estado = new EstadoJuego();
+        colisionador = new Colisionador(estado);
+
+        // detener generador viejo si existía
+        if (generador != null) {
+            generador.detener();
+        }
+    }
+
     public void iniciarJuego(Jugador local, Jugador remoto) {
+
+        // 🔥 SIEMPRE EMPIEZA LIMPIO
+        reiniciarEstado();
 
         estado.setJugadorLocal(local);
         estado.setJugadorRemoto(remoto);
@@ -38,7 +51,7 @@ public class GameManager {
         generador = new GeneradorGlobos(this);
         generador.iniciar();
 
-        // 🎵 MÚSICA DE FONDO
+        // 🎵 Música SOLO si no está sonando
         SoundManager.getInstance().musicaFondo();
     }
 
@@ -58,7 +71,7 @@ public class GameManager {
         return colisionador;
     }
 
-    public void agregarGlobo(model.Globo g) {
+    public void agregarGlobo(Globo g) {
         estado.agregarGlobo(g);
     }
 

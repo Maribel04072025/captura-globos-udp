@@ -19,9 +19,19 @@ public class GeneradorGlobos {
         this.manager = manager;
     }
 
+    // 🔥 Inicia SOLO si no hay uno corriendo
     public void iniciar() {
+        detener(); // por seguridad
+
         timer = new Timer(600, e -> generar());
         timer.start();
+    }
+
+    // 🔥 CLAVE TOTAL PARA QUE "Volver a jugar" funcione
+    public void detener() {
+        if (timer != null && timer.isRunning()) {
+            timer.stop();
+        }
     }
 
     private void generar() {
