@@ -62,7 +62,9 @@ public class VentanaJuego extends JFrame {
                 new Jugador("CPU")
         );
 
+        // LOOP DE MOVIMIENTO
         new Timer(30, e -> {
+
             int ancho = zonaJuego.getWidth();
             int alto = zonaJuego.getHeight();
 
@@ -72,10 +74,25 @@ public class VentanaJuego extends JFrame {
 
         }).start();
 
-        new Timer(1000, e -> {
+        // LOOP DEL TIEMPO (AHORA SÍ CORRECTO)
+        Timer timerTiempo = new Timer(1000, e -> {
+
             manager.getEstado().bajarTiempo();
             barraInfo.actualizar();
-        }).start();
+
+            if (manager.getEstado().getTiempoRestante() <= 0) {
+                ((Timer) e.getSource()).stop();
+                dispose();
+
+                String nombre = manager.getEstado().getJugadorLocal().getNombre();
+                int puntos = manager.getEstado().getJugadorLocal().getPuntos();
+
+                new PantallaFinal(nombre, puntos);
+            }
+
+        });
+
+        timerTiempo.start();
 
         setVisible(true);
     }
