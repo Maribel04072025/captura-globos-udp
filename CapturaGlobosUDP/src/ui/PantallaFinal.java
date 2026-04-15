@@ -5,6 +5,8 @@
 package ui;
 
 import game.GameManager;
+import model.RecordManager;
+import sound.SoundManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,18 +49,44 @@ public class PantallaFinal extends JFrame {
         lblPuntos.setForeground(Color.WHITE);
         lblPuntos.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // 🔥 RÉCORD
+        int record = RecordManager.getRecord();
+
+        JLabel lblRecord = new JLabel("Récord: " + record);
+        lblRecord.setFont(new Font("SansSerif", Font.BOLD, 20));
+        lblRecord.setForeground(Color.WHITE);
+        lblRecord.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel lblMensaje = new JLabel();
+
+        boolean nuevoRecord = puntos > record;
+
+        if (nuevoRecord) {
+            lblMensaje.setText("🔥 ¡NUEVO RÉCORD!");
+            lblMensaje.setForeground(Color.GREEN);
+
+            // 🎵 sonido victoria / record
+            SoundManager.getInstance().musicaGameOver(); // puedes cambiarlo a victory si quieres
+        } else {
+            lblMensaje.setText("💀 Intenta superar el récord");
+            lblMensaje.setForeground(Color.LIGHT_GRAY);
+
+            // 💀 sonido game over
+            SoundManager.getInstance().musicaGameOver();
+        }
+
+        lblMensaje.setFont(new Font("SansSerif", Font.BOLD, 18));
+        lblMensaje.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         JButton btnReiniciar = crearBoton("Volver a jugar");
         JButton btnSalir = crearBoton("Salir");
 
-        // 🔥 CORRECCIÓN IMPORTANTE AQUÍ
         btnReiniciar.addActionListener(e -> {
 
-            // 🧹 limpiar todo el estado del juego
             GameManager.getInstance().reiniciarJuego();
 
             dispose();
 
-            // 🎮 volver a iniciar limpio
             new PantallaInicio();
         });
 
@@ -69,7 +97,13 @@ public class PantallaFinal extends JFrame {
         caja.add(lblNombre);
         caja.add(Box.createVerticalStrut(10));
         caja.add(lblPuntos);
-        caja.add(Box.createVerticalStrut(30));
+        caja.add(Box.createVerticalStrut(10));
+
+        caja.add(lblRecord);
+        caja.add(Box.createVerticalStrut(10));
+        caja.add(lblMensaje);
+
+        caja.add(Box.createVerticalStrut(25));
         caja.add(btnReiniciar);
         caja.add(Box.createVerticalStrut(12));
         caja.add(btnSalir);

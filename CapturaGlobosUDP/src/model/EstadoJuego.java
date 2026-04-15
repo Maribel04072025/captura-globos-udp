@@ -47,10 +47,11 @@ public class EstadoJuego {
                 it.remove();
 
                 if (jugadorLocal != null) {
-                    jugadorLocal.sumarPunto();
+                    // 🔥 CAMBIO IMPORTANTE
+                    jugadorLocal.sumarPuntos(g.getValor());
                 }
 
-                SoundManager.getInstance().sonidoPop(); // OK aquí si lo quieres
+                SoundManager.getInstance().sonidoPop();
                 break;
             }
         }

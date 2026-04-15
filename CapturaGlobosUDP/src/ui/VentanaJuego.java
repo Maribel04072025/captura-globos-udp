@@ -7,6 +7,7 @@ package ui;
 import game.GameManager;
 import model.Globo;
 import model.Jugador;
+import model.RecordManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,14 +54,24 @@ public class VentanaJuego extends JFrame {
                     globo.dibujar(g);
                 }
 
-                int size = 60;
-                g.drawImage(mira, mouseX - size / 2, mouseY - size / 2, size, size, this);
+                // 🔥 MIRA MÁS GRANDE
+                int size = 90;
+
+                g.drawImage(
+                        mira,
+                        mouseX - size / 2,
+                        mouseY - size / 2,
+                        size,
+                        size,
+                        this
+                );
             }
         };
 
         add(zonaJuego, BorderLayout.CENTER);
         manager.setZonaJuego(zonaJuego);
 
+        // 🎯 MOUSE SIGUE SIEMPRE
         zonaJuego.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(java.awt.event.MouseEvent e) {
@@ -82,7 +93,7 @@ public class VentanaJuego extends JFrame {
                 new Jugador("CPU")
         );
 
-        // 🔁 TIMER MOVIMIENTO
+        // 🔁 MOVIMIENTO
         timerMovimiento = new Timer(30, e -> {
 
             int ancho = zonaJuego.getWidth();
@@ -94,7 +105,7 @@ public class VentanaJuego extends JFrame {
         });
         timerMovimiento.start();
 
-        // ⏱ TIMER TIEMPO (CORREGIDO)
+        // ⏱ TIEMPO
         timerTiempo = new Timer(1000, e -> {
 
             manager.getEstado().bajarTiempo();
@@ -107,7 +118,7 @@ public class VentanaJuego extends JFrame {
                 timerTiempo.stop();
                 timerMovimiento.stop();
 
-                terminarJuego();
+                terminarJuego(nombreJugador);
             }
         });
         timerTiempo.start();
@@ -115,12 +126,15 @@ public class VentanaJuego extends JFrame {
         setVisible(true);
     }
 
-    // 🎯 FIN DEL JUEGO (CORRECTO)
-    private void terminarJuego() {
+    // 🎯 FIN DEL JUEGO + RÉCORD
+    private void terminarJuego(String nombreJugador) {
 
         Jugador jugadorFinal = GameManager.getInstance()
                 .getEstado()
                 .getJugadorLocal();
+
+        // 🔥 GUARDAR RÉCORD
+        RecordManager.saveRecord(jugadorFinal.getPuntos());
 
         dispose();
 

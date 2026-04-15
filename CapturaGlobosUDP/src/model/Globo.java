@@ -14,6 +14,9 @@ public class Globo {
     private int dx, dy;
     private Image imagen;
 
+    // 🔥 NUEVO: valor del globo
+    private int valor;
+
     private static final String[] RUTAS = {
             "/recursos/globo.png",
             "/recursos/globoAmarillo.png",
@@ -36,6 +39,30 @@ public class Globo {
         // 🔥 Imagen aleatoria
         String ruta = RUTAS[random.nextInt(RUTAS.length)];
         imagen = new ImageIcon(getClass().getResource(ruta)).getImage();
+
+        // 🎯 ASIGNACIÓN DE VALOR SEGÚN TIPO
+        asignarValorPorTipo(ruta);
+    }
+
+    // 🔥 NUEVO MÉTODO
+    private void asignarValorPorTipo(String ruta) {
+
+        if (ruta.contains("globo.png")) {
+            valor = 1; // fácil
+        } 
+        else if (ruta.contains("Amarillo")) {
+            valor = 3; // medio
+        } 
+        else if (ruta.contains("Azul")) {
+            valor = 5; // difícil
+        } 
+        else {
+            valor = 1;
+        }
+    }
+
+    public int getValor() {
+        return valor;
     }
 
     public void mover(int ancho, int alto) {

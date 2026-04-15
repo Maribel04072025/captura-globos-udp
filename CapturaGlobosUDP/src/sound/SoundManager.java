@@ -12,10 +12,12 @@ public class SoundManager {
 
     private Sonido musica;
     private Sonido pop;
+    private Sonido gameOver; // 🔥 NUEVO
 
     private SoundManager() {
         musica = new Sonido("/recursos/SonidoJuego.wav");
         pop = new Sonido("/recursos/Globo.wav");
+        gameOver = new Sonido("/recursos/FinalJuego.wav");
     }
 
     public static SoundManager getInstance() {
@@ -33,10 +35,20 @@ public class SoundManager {
         pop.reproducir();
     }
 
-    // ✅ NUEVO MÉTODO CLAVE
+    // 🛑 detener música del juego
     public void detenerMusica() {
         if (musica != null) {
             musica.detener();
+        }
+    }
+
+    // 💀 NUEVO: música fin del juego
+    public void musicaGameOver() {
+
+        detenerMusica(); // primero parar la del juego
+
+        if (gameOver != null) {
+            gameOver.reproducir();
         }
     }
 }

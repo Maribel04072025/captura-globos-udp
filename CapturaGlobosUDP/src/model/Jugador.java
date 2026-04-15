@@ -14,8 +14,9 @@ public class Jugador {
         this.puntos = 0;
     }
 
-    public void sumarPunto() {
-        puntos++;
+    // 🔥 AHORA SUMA PUNTOS VARIABLES
+    public void sumarPuntos(int valor) {
+        puntos += valor;
     }
 
     public String getNombre() {
