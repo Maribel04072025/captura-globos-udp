@@ -11,14 +11,6 @@ package model;
  * Autor: Maribel Ceballos
  *
  * Clase que representa el estado general del juego.
- * Controla los elementos activos como globos, jugadores
- * y el tiempo restante de la partida.
- *
- * Responsabilidades:
- * - Gestionar lista de globos activos
- * - Controlar puntaje del jugador
- * - Manejar tiempo del juego
- * - Procesar interacciones (clicks sobre globos)
  */
 
 import java.util.ArrayList;
@@ -33,35 +25,25 @@ public class EstadoJuego {
     private Jugador jugadorRemoto;
     private int tiempoRestante = 60;
 
-    // ---------------- GLOBOS ----------------
+    // 🔥 velocidad global del juego
+    private double velocidadGlobal = 1.0;
 
-    /**
-     * Retorna la lista de globos activos en el juego.
-     */
     public List<Globo> getGlobos() {
         return globos;
     }
 
-    /**
-     * Agrega un nuevo globo al estado del juego.
-     */
     public void agregarGlobo(Globo g) {
         globos.add(g);
     }
 
-    /**
-     * Actualiza la posicion de todos los globos activos.
-     */
+    // 🔥 AHORA USA VELOCIDAD GLOBAL
     public void actualizarGlobos(int ancho, int alto) {
+
         for (Globo g : globos) {
-            g.mover(ancho, alto);
+            g.mover(ancho, alto, velocidadGlobal);
         }
     }
 
-    /**
-     * Procesa el click del jugador y elimina el globo si es golpeado.
-     * Ademas suma puntos segun el valor del globo.
-     */
     public void reventarGloboEn(int x, int y) {
 
         Iterator<Globo> it = globos.iterator();
@@ -83,50 +65,34 @@ public class EstadoJuego {
         }
     }
 
-    // ---------------- TIEMPO ----------------
-
-    /**
-     * Reduce el tiempo restante del juego en 1 segundo.
-     */
+    // 🔥 dificultad progresiva
     public void bajarTiempo() {
+
         if (tiempoRestante > 0) {
             tiempoRestante--;
+
+            if (tiempoRestante % 10 == 0) {
+                velocidadGlobal += 0.15;
+            }
         }
     }
 
-    /**
-     * Retorna el tiempo restante de la partida.
-     */
     public int getTiempoRestante() {
         return tiempoRestante;
     }
 
-    // ---------------- JUGADORES ----------------
-
-    /**
-     * Retorna el jugador principal.
-     */
     public Jugador getJugadorLocal() {
         return jugadorLocal;
     }
 
-    /**
-     * Asigna el jugador principal.
-     */
     public void setJugadorLocal(Jugador jugadorLocal) {
         this.jugadorLocal = jugadorLocal;
     }
 
-    /**
-     * Retorna el jugador secundario.
-     */
     public Jugador getJugadorRemoto() {
         return jugadorRemoto;
     }
 
-    /**
-     * Asigna el jugador secundario.
-     */
     public void setJugadorRemoto(Jugador jugadorRemoto) {
         this.jugadorRemoto = jugadorRemoto;
     }
