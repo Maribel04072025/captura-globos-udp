@@ -4,6 +4,19 @@
  */
 package game;
 
+/**
+ * Autor: Maribel Ceballos
+ *
+ * Clase encargada de generar globos automaticamente durante la partida.
+ * Utiliza un Timer para crear globos en intervalos de tiempo
+ * y evita colisiones entre ellos.
+ *
+ * Responsabilidades:
+ * - Generar globos aleatorios en pantalla
+ * - Evitar superposicion de globos
+ * - Controlar inicio y detencion del generador
+ */
+
 import model.Globo;
 
 import javax.swing.*;
@@ -15,25 +28,39 @@ public class GeneradorGlobos {
     private Random random = new Random();
     private GameManager manager;
 
+    /**
+     * Crea un generador asociado al GameManager.
+     *
+     * @param manager gestor principal del juego
+     */
     public GeneradorGlobos(GameManager manager) {
         this.manager = manager;
     }
 
-    // 🔥 Inicia SOLO si no hay uno corriendo
+    /**
+     * Inicia la generacion de globos.
+     * Detiene cualquier generador anterior por seguridad.
+     */
     public void iniciar() {
-        detener(); // por seguridad
+        detener();
 
         timer = new Timer(600, e -> generar());
         timer.start();
     }
 
-    // 🔥 CLAVE TOTAL PARA QUE "Volver a jugar" funcione
+    /**
+     * Detiene la generacion de globos si esta activa.
+     */
     public void detener() {
         if (timer != null && timer.isRunning()) {
             timer.stop();
         }
     }
 
+    /**
+     * Genera un nuevo globo en una posicion valida.
+     * Evita colisiones con otros globos existentes.
+     */
     private void generar() {
 
         JPanel zona = manager.getZonaJuego();

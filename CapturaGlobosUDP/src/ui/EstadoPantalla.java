@@ -5,11 +5,20 @@
 package ui;
 
 /**
+ * Autor: Maribel Ceballos
  *
- * @author marib
+ * Enumeracion que representa los posibles estados
+ * de la interfaz del juego.
+ *
+ * Se utiliza para controlar la navegacion entre pantallas:
+ * - Pantalla de inicio
+ * - Pantalla de juego
+ * - Pantalla final
  */
+
 public enum EstadoPantalla {
+
     INICIO,
     JUEGO,
-    FINAL   
+    FINAL
 }

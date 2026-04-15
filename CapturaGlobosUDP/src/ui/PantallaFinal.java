@@ -4,6 +4,21 @@
  */
 package ui;
 
+/**
+ * Autor: Maribel Ceballos
+ *
+ * Pantalla final del juego.
+ * Muestra el resultado del jugador al terminar la partida,
+ * incluyendo:
+ * - Nombre del jugador
+ * - Puntaje obtenido
+ * - Record actual
+ * - Mensaje segun si se supero el record
+ * - Sonido de fin de juego o record
+ *
+ * Permite reiniciar el juego o salir del sistema.
+ */
+
 import game.GameManager;
 import model.RecordManager;
 import sound.SoundManager;
@@ -15,6 +30,12 @@ public class PantallaFinal extends JFrame {
 
     private Image fondo;
 
+    /**
+     * Constructor de la pantalla final.
+     *
+     * @param nombre nombre del jugador
+     * @param puntos puntaje obtenido en la partida
+     */
     public PantallaFinal(String nombre, int puntos) {
 
         setTitle("Fin del Juego");
@@ -49,7 +70,7 @@ public class PantallaFinal extends JFrame {
         lblPuntos.setForeground(Color.WHITE);
         lblPuntos.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // 🔥 RÉCORD
+        // Record
         int record = RecordManager.getRecord();
 
         JLabel lblRecord = new JLabel("Récord: " + record);
@@ -62,16 +83,14 @@ public class PantallaFinal extends JFrame {
         boolean nuevoRecord = puntos > record;
 
         if (nuevoRecord) {
-            lblMensaje.setText("🔥 ¡NUEVO RÉCORD!");
+            lblMensaje.setText("¡NUEVO RÉCORD!");
             lblMensaje.setForeground(Color.GREEN);
 
-            // 🎵 sonido victoria / record
-            SoundManager.getInstance().musicaGameOver(); // puedes cambiarlo a victory si quieres
+            SoundManager.getInstance().musicaGameOver();
         } else {
-            lblMensaje.setText("💀 Intenta superar el récord");
+            lblMensaje.setText("Intenta superar el récord");
             lblMensaje.setForeground(Color.LIGHT_GRAY);
 
-            // 💀 sonido game over
             SoundManager.getInstance().musicaGameOver();
         }
 
@@ -114,6 +133,9 @@ public class PantallaFinal extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Crea un boton estilizado.
+     */
     private JButton crearBoton(String texto) {
         JButton b = new JButton(texto) {
             protected void paintComponent(Graphics g) {
@@ -135,6 +157,9 @@ public class PantallaFinal extends JFrame {
         return b;
     }
 
+    /**
+     * Panel de fondo con imagen.
+     */
     class PanelFondo extends JPanel {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -142,6 +167,9 @@ public class PantallaFinal extends JFrame {
         }
     }
 
+    /**
+     * Panel con bordes redondeados.
+     */
     class PanelRedondeado extends JPanel {
         private Color color;
         private int radio;

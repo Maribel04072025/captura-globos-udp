@@ -13,6 +13,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseMotionAdapter;
 
+/**
+ * Ventana principal del juego donde ocurre toda la jugabilidad.
+ *
+ * Controla:
+ * - Movimiento de globos
+ * - Interaccion del mouse
+ * - Temporizador del juego
+ * - Finalizacion del juego
+ *
+ * Autor: Maribel Ceballos
+ */
 public class VentanaJuego extends JFrame {
 
     private JPanel zonaJuego;
@@ -54,24 +65,17 @@ public class VentanaJuego extends JFrame {
                     globo.dibujar(g);
                 }
 
-                // 🔥 MIRA MÁS GRANDE
                 int size = 90;
-
-                g.drawImage(
-                        mira,
-                        mouseX - size / 2,
-                        mouseY - size / 2,
-                        size,
-                        size,
-                        this
-                );
+                g.drawImage(mira, mouseX - size / 2, mouseY - size / 2, size, size, this);
             }
         };
 
         add(zonaJuego, BorderLayout.CENTER);
         manager.setZonaJuego(zonaJuego);
 
-        // 🎯 MOUSE SIGUE SIEMPRE
+        /**
+         * Seguimiento constante del mouse
+         */
         zonaJuego.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(java.awt.event.MouseEvent e) {
@@ -81,6 +85,9 @@ public class VentanaJuego extends JFrame {
             }
         });
 
+        /**
+         * Click del usuario para reventar globos
+         */
         zonaJuego.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -93,7 +100,9 @@ public class VentanaJuego extends JFrame {
                 new Jugador("CPU")
         );
 
-        // 🔁 MOVIMIENTO
+        /**
+         * Timer de movimiento de globos
+         */
         timerMovimiento = new Timer(30, e -> {
 
             int ancho = zonaJuego.getWidth();
@@ -105,7 +114,9 @@ public class VentanaJuego extends JFrame {
         });
         timerMovimiento.start();
 
-        // ⏱ TIEMPO
+        /**
+         * Timer del tiempo de juego
+         */
         timerTiempo = new Timer(1000, e -> {
 
             manager.getEstado().bajarTiempo();
@@ -121,19 +132,22 @@ public class VentanaJuego extends JFrame {
                 terminarJuego(nombreJugador);
             }
         });
+
         timerTiempo.start();
 
         setVisible(true);
     }
 
-    // 🎯 FIN DEL JUEGO + RÉCORD
+    /**
+     * Finaliza el juego y guarda el record
+     */
     private void terminarJuego(String nombreJugador) {
 
         Jugador jugadorFinal = GameManager.getInstance()
                 .getEstado()
                 .getJugadorLocal();
 
-        // 🔥 GUARDAR RÉCORD
+        // Guardar record
         RecordManager.saveRecord(jugadorFinal.getPuntos());
 
         dispose();

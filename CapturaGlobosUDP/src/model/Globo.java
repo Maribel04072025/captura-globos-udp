@@ -4,6 +4,19 @@
  */
 package model;
 
+/**
+ * Autor: Maribel Ceballos
+ *
+ * Clase que representa un globo dentro del juego.
+ * Cada globo tiene posicion, movimiento, imagen y valor de puntaje.
+ *
+ * Responsabilidades:
+ * - Representar un objeto interactivo en pantalla
+ * - Moverse dentro del area de juego
+ * - Detectar colisiones y clicks
+ * - Asignar puntaje segun su tipo
+ */
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
@@ -14,7 +27,7 @@ public class Globo {
     private int dx, dy;
     private Image imagen;
 
-    // 🔥 NUEVO: valor del globo
+    // Valor de puntos del globo
     private int valor;
 
     private static final String[] RUTAS = {
@@ -25,6 +38,10 @@ public class Globo {
 
     private static final Random random = new Random();
 
+    /**
+     * Constructor del globo.
+     * Inicializa posicion, velocidad, imagen y valor.
+     */
     public Globo(int x, int y, int radio) {
         this.x = x;
         this.y = y;
@@ -36,35 +53,38 @@ public class Globo {
         if (random.nextBoolean()) dx *= -1;
         if (random.nextBoolean()) dy *= -1;
 
-        // 🔥 Imagen aleatoria
         String ruta = RUTAS[random.nextInt(RUTAS.length)];
         imagen = new ImageIcon(getClass().getResource(ruta)).getImage();
 
-        // 🎯 ASIGNACIÓN DE VALOR SEGÚN TIPO
         asignarValorPorTipo(ruta);
     }
 
-    // 🔥 NUEVO MÉTODO
+    /**
+     * Asigna el valor del globo segun su tipo.
+     */
     private void asignarValorPorTipo(String ruta) {
 
         if (ruta.contains("globo.png")) {
-            valor = 1; // fácil
-        } 
-        else if (ruta.contains("Amarillo")) {
-            valor = 3; // medio
-        } 
-        else if (ruta.contains("Azul")) {
-            valor = 5; // difícil
-        } 
-        else {
+            valor = 1;
+        } else if (ruta.contains("Amarillo")) {
+            valor = 3;
+        } else if (ruta.contains("Azul")) {
+            valor = 5;
+        } else {
             valor = 1;
         }
     }
 
+    /**
+     * Retorna el valor en puntos del globo.
+     */
     public int getValor() {
         return valor;
     }
 
+    /**
+     * Mueve el globo dentro del area de juego.
+     */
     public void mover(int ancho, int alto) {
         x += dx;
         y += dy;
@@ -73,16 +93,25 @@ public class Globo {
         if (y - radio < 0 || y + radio > alto) dy *= -1;
     }
 
+    /**
+     * Dibuja el globo en pantalla.
+     */
     public void dibujar(Graphics g) {
         g.drawImage(imagen, x - radio, y - radio, radio * 2, radio * 2, null);
     }
 
+    /**
+     * Verifica si el punto dado colisiona con el globo.
+     */
     public boolean contiene(int mx, int my) {
         int dx = mx - x;
         int dy = my - y;
         return dx * dx + dy * dy <= radio * radio;
     }
 
+    /**
+     * Verifica colision con otro globo.
+     */
     public boolean colisionaCon(Globo otro) {
         int dx = this.x - otro.x;
         int dy = this.y - otro.y;

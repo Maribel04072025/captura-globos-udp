@@ -4,11 +4,17 @@
  */
 package ui;
 
-import sound.SoundManager; // 🔊 IMPORT AGREGADO
+import sound.SoundManager;
 
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Pantalla de inicio del juego.
+ * Permite ingresar el nombre del jugador e iniciar la partida.
+ *
+ * Autor: Maribel Ceballos
+ */
 public class PantallaInicio extends JFrame {
 
     private JTextField campoNombre;
@@ -75,12 +81,15 @@ public class PantallaInicio extends JFrame {
         panel.add(caja);
         add(panel);
 
-        // 🔊 SONIDO AGREGADO (sin modificar nada más)
+        // Reproduce musica de fondo del menu
         SoundManager.getInstance().musicaFondo();
 
         setVisible(true);
     }
 
+    /**
+     * Crea un boton con estilo personalizado.
+     */
     private JButton crearBoton(String texto) {
         JButton b = new JButton(texto) {
             protected void paintComponent(Graphics g) {
@@ -102,6 +111,9 @@ public class PantallaInicio extends JFrame {
         return b;
     }
 
+    /**
+     * Inicia el juego validando el nombre del jugador.
+     */
     private void iniciarJuego() {
         String nombre = campoNombre.getText().trim();
 
@@ -114,6 +126,9 @@ public class PantallaInicio extends JFrame {
         new VentanaJuego(nombre);
     }
 
+    /**
+     * Panel de fondo con imagen.
+     */
     class PanelFondo extends JPanel {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -121,7 +136,11 @@ public class PantallaInicio extends JFrame {
         }
     }
 
+    /**
+     * Panel con bordes redondeados.
+     */
     class PanelRedondeado extends JPanel {
+
         private Color color;
         private int radio;
 
