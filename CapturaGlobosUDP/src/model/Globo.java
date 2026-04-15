@@ -6,6 +6,7 @@ package model;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Random;
 
 public class Globo {
 
@@ -13,20 +14,28 @@ public class Globo {
     private int dx, dy;
     private Image imagen;
 
+    private static final String[] RUTAS = {
+            "/recursos/globo.png",
+            "/recursos/globoAmarillo.png",
+            "/recursos/globoAzul.png"
+    };
+
+    private static final Random random = new Random();
+
     public Globo(int x, int y, int radio) {
         this.x = x;
         this.y = y;
         this.radio = radio;
 
-        dx = (int)(Math.random() * 5) + 2;
-        dy = (int)(Math.random() * 5) + 2;
+        dx = random.nextInt(5) + 2;
+        dy = random.nextInt(5) + 2;
 
-        if (Math.random() < 0.5) dx *= -1;
-        if (Math.random() < 0.5) dy *= -1;
+        if (random.nextBoolean()) dx *= -1;
+        if (random.nextBoolean()) dy *= -1;
 
-        imagen = new ImageIcon(
-                getClass().getResource("/recursos/globo.png")
-        ).getImage();
+        // 🔥 Imagen aleatoria
+        String ruta = RUTAS[random.nextInt(RUTAS.length)];
+        imagen = new ImageIcon(getClass().getResource(ruta)).getImage();
     }
 
     public void mover(int ancho, int alto) {
@@ -53,8 +62,4 @@ public class Globo {
         int r = this.radio + otro.radio;
         return dx * dx + dy * dy <= r * r;
     }
-
-    public int getX() { return x; }
-    public int getY() { return y; }
-    public int getRadio() { return radio; }
 }

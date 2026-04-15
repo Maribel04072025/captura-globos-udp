@@ -4,10 +4,6 @@
  */
 package model;
 
-/**
- *
- * @author marib
- */
 public class Jugador {
 
     private String nombre;
@@ -22,6 +18,11 @@ public class Jugador {
         puntos++;
     }
 
-    public String getNombre() { return nombre; }
-    public int getPuntos() { return puntos; }
+    public String getNombre() {
+        return nombre;
+    }
+
+    public int getPuntos() {
+        return puntos;
+    }
 }

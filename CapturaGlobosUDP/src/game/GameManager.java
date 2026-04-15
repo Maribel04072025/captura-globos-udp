@@ -19,7 +19,8 @@ public class GameManager {
     private Colisionador colisionador;
 
     private GameManager() {
-        reiniciarEstado();
+        estado = new EstadoJuego();
+        colisionador = new Colisionador(estado);
     }
 
     public static GameManager getInstance() {
@@ -29,21 +30,9 @@ public class GameManager {
         return instance;
     }
 
-    // 🔥 ESTE MÉTODO ES LA CLAVE DE TODO
-    public void reiniciarEstado() {
-        estado = new EstadoJuego();
-        colisionador = new Colisionador(estado);
-
-        // detener generador viejo si existía
-        if (generador != null) {
-            generador.detener();
-        }
-    }
+    // ================= INICIAR JUEGO =================
 
     public void iniciarJuego(Jugador local, Jugador remoto) {
-
-        // 🔥 SIEMPRE EMPIEZA LIMPIO
-        reiniciarEstado();
 
         estado.setJugadorLocal(local);
         estado.setJugadorRemoto(remoto);
@@ -51,9 +40,24 @@ public class GameManager {
         generador = new GeneradorGlobos(this);
         generador.iniciar();
 
-        // 🎵 Música SOLO si no está sonando
         SoundManager.getInstance().musicaFondo();
     }
+
+    // ================= REINICIAR =================
+
+    public void reiniciarJuego() {
+
+        if (generador != null) {
+            generador.detener();
+        }
+
+        SoundManager.getInstance().detenerMusica();
+
+        estado = new EstadoJuego();
+        colisionador = new Colisionador(estado);
+    }
+
+    // ================= ZONA =================
 
     public void setZonaJuego(JPanel panel) {
         this.zonaJuego = panel;
@@ -63,6 +67,8 @@ public class GameManager {
         return zonaJuego;
     }
 
+    // ================= ESTADO =================
+
     public EstadoJuego getEstado() {
         return estado;
     }
@@ -70,6 +76,8 @@ public class GameManager {
     public Colisionador getColisionador() {
         return colisionador;
     }
+
+    // ================= ACCIONES =================
 
     public void agregarGlobo(Globo g) {
         estado.agregarGlobo(g);

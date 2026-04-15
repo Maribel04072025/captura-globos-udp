@@ -32,4 +32,11 @@ public class SoundManager {
     public void sonidoPop() {
         pop.reproducir();
     }
+
+    // ✅ NUEVO MÉTODO CLAVE
+    public void detenerMusica() {
+        if (musica != null) {
+            musica.detener();
+        }
+    }
 }

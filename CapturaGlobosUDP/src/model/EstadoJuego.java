@@ -10,6 +10,7 @@ package model;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import sound.SoundManager;
 
 public class EstadoJuego {
 
@@ -35,9 +36,11 @@ public class EstadoJuego {
     }
 
     public void reventarGloboEn(int x, int y) {
+
         Iterator<Globo> it = globos.iterator();
 
         while (it.hasNext()) {
+
             Globo g = it.next();
 
             if (g.contiene(x, y)) {
@@ -47,7 +50,7 @@ public class EstadoJuego {
                     jugadorLocal.sumarPunto();
                 }
 
-                sound.SoundManager.getInstance().sonidoPop();
+                SoundManager.getInstance().sonidoPop(); // OK aquí si lo quieres
                 break;
             }
         }
@@ -67,13 +70,17 @@ public class EstadoJuego {
 
     // ---------------- JUGADORES ----------------
 
-    public Jugador getJugadorLocal() { return jugadorLocal; }
+    public Jugador getJugadorLocal() {
+        return jugadorLocal;
+    }
 
     public void setJugadorLocal(Jugador jugadorLocal) {
         this.jugadorLocal = jugadorLocal;
     }
 
-    public Jugador getJugadorRemoto() { return jugadorRemoto; }
+    public Jugador getJugadorRemoto() {
+        return jugadorRemoto;
+    }
 
     public void setJugadorRemoto(Jugador jugadorRemoto) {
         this.jugadorRemoto = jugadorRemoto;

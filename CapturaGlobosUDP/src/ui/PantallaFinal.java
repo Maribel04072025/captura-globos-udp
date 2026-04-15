@@ -4,6 +4,8 @@
  */
 package ui;
 
+import game.GameManager;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -48,8 +50,15 @@ public class PantallaFinal extends JFrame {
         JButton btnReiniciar = crearBoton("Volver a jugar");
         JButton btnSalir = crearBoton("Salir");
 
+        // 🔥 CORRECCIÓN IMPORTANTE AQUÍ
         btnReiniciar.addActionListener(e -> {
+
+            // 🧹 limpiar todo el estado del juego
+            GameManager.getInstance().reiniciarJuego();
+
             dispose();
+
+            // 🎮 volver a iniciar limpio
             new PantallaInicio();
         });
 

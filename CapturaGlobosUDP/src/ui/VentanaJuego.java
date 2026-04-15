@@ -10,12 +10,20 @@ import model.Jugador;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseMotionAdapter;
 
 public class VentanaJuego extends JFrame {
 
     private JPanel zonaJuego;
     private BarraInfo barraInfo;
     private Image fondo;
+    private Image mira;
+
+    private int mouseX = 0;
+    private int mouseY = 0;
+
+    private Timer timerMovimiento;
+    private Timer timerTiempo;
 
     public VentanaJuego(String nombreJugador) {
 
@@ -27,28 +35,40 @@ public class VentanaJuego extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        fondo = new ImageIcon(
-                getClass().getResource("/recursos/fondo.jpg")
-        ).getImage();
+        fondo = new ImageIcon(getClass().getResource("/recursos/fondo.jpg")).getImage();
+        mira = new ImageIcon(getClass().getResource("/recursos/mira.png")).getImage();
 
         barraInfo = new BarraInfo();
         add(barraInfo, BorderLayout.NORTH);
 
         zonaJuego = new JPanel() {
+
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
+
                 g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
 
                 for (Globo globo : manager.getEstado().getGlobos()) {
                     globo.dibujar(g);
                 }
+
+                int size = 60;
+                g.drawImage(mira, mouseX - size / 2, mouseY - size / 2, size, size, this);
             }
         };
 
         add(zonaJuego, BorderLayout.CENTER);
-
         manager.setZonaJuego(zonaJuego);
+
+        zonaJuego.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(java.awt.event.MouseEvent e) {
+                mouseX = e.getX();
+                mouseY = e.getY();
+                zonaJuego.repaint();
+            }
+        });
 
         zonaJuego.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -62,8 +82,8 @@ public class VentanaJuego extends JFrame {
                 new Jugador("CPU")
         );
 
-        // LOOP DE MOVIMIENTO
-        new Timer(30, e -> {
+        // 🔁 TIMER MOVIMIENTO
+        timerMovimiento = new Timer(30, e -> {
 
             int ancho = zonaJuego.getWidth();
             int alto = zonaJuego.getHeight();
@@ -71,29 +91,42 @@ public class VentanaJuego extends JFrame {
             manager.getEstado().actualizarGlobos(ancho, alto);
             barraInfo.actualizar();
             zonaJuego.repaint();
+        });
+        timerMovimiento.start();
 
-        }).start();
-
-        // LOOP DEL TIEMPO (AHORA SÍ CORRECTO)
-        Timer timerTiempo = new Timer(1000, e -> {
+        // ⏱ TIMER TIEMPO (CORREGIDO)
+        timerTiempo = new Timer(1000, e -> {
 
             manager.getEstado().bajarTiempo();
             barraInfo.actualizar();
 
-            if (manager.getEstado().getTiempoRestante() <= 0) {
-                ((Timer) e.getSource()).stop();
-                dispose();
+            int tiempo = manager.getEstado().getTiempoRestante();
 
-                String nombre = manager.getEstado().getJugadorLocal().getNombre();
-                int puntos = manager.getEstado().getJugadorLocal().getPuntos();
+            if (tiempo <= 0) {
 
-                new PantallaFinal(nombre, puntos);
+                timerTiempo.stop();
+                timerMovimiento.stop();
+
+                terminarJuego();
             }
-
         });
-
         timerTiempo.start();
 
         setVisible(true);
+    }
+
+    // 🎯 FIN DEL JUEGO (CORRECTO)
+    private void terminarJuego() {
+
+        Jugador jugadorFinal = GameManager.getInstance()
+                .getEstado()
+                .getJugadorLocal();
+
+        dispose();
+
+        new PantallaFinal(
+                jugadorFinal.getNombre(),
+                jugadorFinal.getPuntos()
+        );
     }
 }
