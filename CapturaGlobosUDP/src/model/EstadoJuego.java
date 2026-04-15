@@ -11,6 +11,15 @@ package model;
  * Autor: Maribel Ceballos
  *
  * Clase que representa el estado general del juego.
+ * Administra todos los elementos activos durante la partida,
+ * incluyendo globos, jugadores, tiempo y dificultad.
+ *
+ * Responsabilidades principales:
+ * - Manejar la lista de globos activos en pantalla
+ * - Controlar el jugador principal y su puntaje
+ * - Administrar el tiempo restante del juego
+ * - Aumentar progresivamente la dificultad del juego
+ * - Procesar interacciones del usuario (clicks sobre globos)
  */
 
 import java.util.ArrayList;
@@ -25,18 +34,27 @@ public class EstadoJuego {
     private Jugador jugadorRemoto;
     private int tiempoRestante = 60;
 
-    // 🔥 velocidad global del juego
+    // Factor que incrementa la velocidad global de los globos
     private double velocidadGlobal = 1.0;
 
+    /**
+     * Retorna la lista de globos activos en el juego
+     */
     public List<Globo> getGlobos() {
         return globos;
     }
 
+    /**
+     * Agrega un nuevo globo al estado del juego
+     */
     public void agregarGlobo(Globo g) {
         globos.add(g);
     }
 
-    // 🔥 AHORA USA VELOCIDAD GLOBAL
+    /**
+     * Actualiza la posicion de todos los globos en pantalla
+     * aplicando la velocidad global del juego
+     */
     public void actualizarGlobos(int ancho, int alto) {
 
         for (Globo g : globos) {
@@ -44,6 +62,11 @@ public class EstadoJuego {
         }
     }
 
+    /**
+     * Procesa el click del usuario sobre la pantalla.
+     * Si un globo es golpeado, se elimina y se suma puntaje
+     * al jugador correspondiente segun el valor del globo.
+     */
     public void reventarGloboEn(int x, int y) {
 
         Iterator<Globo> it = globos.iterator();
@@ -65,7 +88,11 @@ public class EstadoJuego {
         }
     }
 
-    // 🔥 dificultad progresiva
+    /**
+     * Reduce el tiempo restante del juego.
+     * Cada cierto intervalo aumenta la dificultad
+     * incrementando la velocidad global de los globos.
+     */
     public void bajarTiempo() {
 
         if (tiempoRestante > 0) {
@@ -77,22 +104,37 @@ public class EstadoJuego {
         }
     }
 
+    /**
+     * Retorna el tiempo restante del juego
+     */
     public int getTiempoRestante() {
         return tiempoRestante;
     }
 
+    /**
+     * Retorna el jugador principal
+     */
     public Jugador getJugadorLocal() {
         return jugadorLocal;
     }
 
+    /**
+     * Asigna el jugador principal
+     */
     public void setJugadorLocal(Jugador jugadorLocal) {
         this.jugadorLocal = jugadorLocal;
     }
 
+    /**
+     * Retorna el jugador secundario
+     */
     public Jugador getJugadorRemoto() {
         return jugadorRemoto;
     }
 
+    /**
+     * Asigna el jugador secundario
+     */
     public void setJugadorRemoto(Jugador jugadorRemoto) {
         this.jugadorRemoto = jugadorRemoto;
     }
